@@ -1,34 +1,41 @@
 import { createSignal } from "solid-js";
 import solidLogo from "./assets/solid.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
 
 function App() {
   const [count, setCount] = createSignal(0);
 
+  const storedCount = localStorage.getItem("count");
+
+  if (storedCount != null) {
+    setCount(parseInt(storedCount));
+  }
+
+  function updateCount(num: number) {
+    setCount(count() + num);
+    localStorage.setItem("count", count().toString());
+  }
+
   return (
-    <>
-      <div >
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://solidjs.com" target="_blank">
-          <img src={solidLogo} class="logo solid" alt="Solid logo" />
-        </a>
+    <div class="container mx-0 flex min-w-full flex-col items-center px-10 py-10">
+      <div>
+        <img class="h-48 w-48" src={solidLogo} alt="Solid logo" />
       </div>
-      <h1>Vite + Solid</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count()}
+      <h1 class="mb-3 text-5xl">Solid</h1>
+      <div>
+        <button
+          onClick={() => updateCount(1)}
+          class="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        >
+          stored count is {count()}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button
+          class="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+          onClick={() => updateCount(count() * -1)}
+        >
+          reset count
+        </button>
       </div>
-      <p class="read-the-docs">
-        Click on the Vite and Solid logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 
