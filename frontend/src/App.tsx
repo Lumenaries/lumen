@@ -1,14 +1,14 @@
-import { createSignal } from 'solid-js'
-import solidLogo from './assets/solid.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createSignal } from "solid-js";
+import solidLogo from "./assets/solid.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = createSignal(0)
+  const [count, setCount] = createSignal(0);
 
   return (
     <>
-      <div>
+      <div >
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} class="logo" alt="Vite logo" />
         </a>
@@ -29,7 +29,7 @@ function App() {
         Click on the Vite and Solid logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
