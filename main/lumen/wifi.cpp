@@ -6,6 +6,7 @@
 #include "mdns.h"
 
 #include <cstring>
+#include <string>
 
 namespace {
 
@@ -56,7 +57,7 @@ void wifi_init_softap()
     wifi_config_t wifi_config = {
         .ap = {.ssid = CONFIG_ESP_WIFI_SSID,
                .password = CONFIG_ESP_WIFI_PASSWORD,
-               .ssid_len = strlen(CONFIG_ESP_WIFI_SSID),
+               .ssid_len = static_cast<uint8_t>(strlen(CONFIG_ESP_WIFI_SSID)),
                .authmode = WIFI_AUTH_WPA_WPA2_PSK,
                .max_connection = CONFIG_ESP_MAX_STA_CONN},
     };

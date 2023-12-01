@@ -90,7 +90,7 @@ esp_err_t init_fs()
         ESP_LOGE(tag, "Failed to get SPIFFS partition information (%s)",
                  esp_err_to_name(ret));
     } else {
-        ESP_LOGI(tag, "Partition size: total: %ld, used: %ld", total, used);
+        ESP_LOGI(tag, "Partition size: total: %zu, used: %zu", total, used);
     }
     return ESP_OK;
 }
