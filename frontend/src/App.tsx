@@ -1,86 +1,83 @@
-import { createSignal, createResource, onCleanup } from "solid-js";
+import { createSignal, onCleanup } from "solid-js";
 import ledIcon from "./assets/led_icon.svg";
 
 function App() {
-  const [count, setCount] = createSignal(0);
-  const [ledStatus, setLedStatus] = createSignal("");
+  const [color, setColor] = createSignal(0);
 
-  const fetchLedStatus = async () => {
+  const fetchColor = async () => {
     const response = await fetch("/api/v1/led");
 
     const json = await response.json();
-    setLedStatus(json["led on"] ? "on" : "off");
+    setColor(json["color"]);
   };
 
-  const [led] = createResource(fetchLedStatus);
-
-  const interval = setInterval(fetchLedStatus, 500);
-
+  const interval = setInterval(fetchColor, 500);
   onCleanup(() => clearInterval(interval));
 
-  const storedCount = localStorage.getItem("count");
-
-  if (storedCount != null) {
-    setCount(parseInt(storedCount));
-  }
-
-  function updateCount(num: number) {
-    setCount(count() + num);
-    localStorage.setItem("count", count().toString());
-  }
-
-  const turnOnLed = async (on: boolean) => {
+  const changeColor = async (c: number) => {
     const response = await fetch("/api/v1/led", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "led on": on }),
+      body: JSON.stringify({ "color": c }),
     });
 
     const json = await response.json();
-    setLedStatus(json["led on"] ? "on" : "off");
+    setColor(json["color"]);
   };
+
+  function translateColor(c: number) {
+    switch (c) {
+      case 0:
+        return "red";
+      case 1:
+        return "green";
+      case 2:
+        return "blue";
+      default:
+        return "violet";
+    }
+  }
 
   return (
     <div class="container mx-0 flex min-w-full flex-col items-center px-10 py-10">
-      <div class="outlined-4 rounded-full outline outline-offset-2">
+      <div
+        class={`outlined-4 rounded-full bg-${translateColor(
+          color(),
+        )}-500 outline outline-offset-2 transition duration-300 ease-in-out`}
+      >
         <img class="h-48 w-48 p-10" src={ledIcon} alt="Solid logo" />
       </div>
-      <h1 class="my-3 text-5xl">
-        LED Status: {led.loading ? "" : ledStatus()}
-      </h1>
+
+      <h1 class="my-10 text-5xl">Lumenaries</h1>
+
       <div>
         <button
-          onClick={() => updateCount(1)}
-          class="m-2 rounded bg-violet-500 px-4 py-2 font-bold text-white hover:bg-violet-700"
+          onClick={() => changeColor(0)}
+          class="m-2 my-2 w-40 rounded bg-red-500 py-6 text-2xl font-bold text-white"
         >
-          stored count is {count()}
-        </button>
-        <button
-          class="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={() => updateCount(count() * -1)}
-        >
-          reset count
-        </button>
-      </div>
-      <div>
-        <button
-          class="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={() => turnOnLed(true)}
-        >
-          Turn LED on
-        </button>
-        <button
-          class="m-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={() => turnOnLed(false)}
-        >
-          Turn LED off
+          Red
         </button>
       </div>
 
-      <div id="list"></div>
+      <div>
+        <button
+          onClick={() => changeColor(1)}
+          class="m-2 my-2 w-40 rounded bg-green-500 py-6 text-2xl font-bold text-white"
+        >
+          Green
+        </button>
+      </div>
+      <div>
+        <button
+          onClick={() => changeColor(2)}
+          class="m-2 my-2 w-40 rounded bg-blue-500 py-6 text-2xl font-bold text-white"
+        >
+          Blue
+        </button>
+      </div>
     </div>
   );
 }

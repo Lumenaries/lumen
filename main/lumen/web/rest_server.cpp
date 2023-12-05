@@ -18,8 +18,6 @@ constexpr auto tag = "rest_server";
 
 } // namespace
 
-const gpio_num_t led_pin = GPIO_NUM_13;
-
 #define FILE_PATH_MAX (ESP_VFS_PATH_MAX + 128)
 #define SCRATCH_BUFSIZE (10240)
 
@@ -131,23 +129,18 @@ esp_err_t led_post_handler(httpd_req_t* req)
 
     cJSON* root = cJSON_Parse(buf);
 
-    bool led_on;
-    if (cJSON_GetObjectItem(root, "led on")->type == cJSON_True) {
-        led_on = true;
-    } else {
-        led_on = false;
-    }
-    ESP_LOGI(tag, "LED POST: %d", led_on);
+    const int color = cJSON_GetObjectItem(root, "color")->valueint;
+    ESP_LOGI(tag, "LED POST: %d", color);
 
-    gpio_set_level(led_pin, led_on);
+    // set the color
 
     cJSON* response = cJSON_CreateObject();
-    cJSON_AddBoolToObject(response, "led on", led_on);
-    const char* button_status = cJSON_Print(response);
+    cJSON_AddNumberToObject(response, "color", color);
+    const char* color_status = cJSON_Print(response);
 
-    httpd_resp_sendstr(req, button_status);
+    httpd_resp_sendstr(req, color_status);
 
-    free((void*)button_status);
+    free((void*)color_status);
     cJSON_Delete(response);
 
     cJSON_Delete(root);
@@ -156,20 +149,21 @@ esp_err_t led_post_handler(httpd_req_t* req)
 
 esp_err_t led_get_handler(httpd_req_t* req)
 {
-    const bool led_on = gpio_get_level(led_pin);
+    // get the color
+    const int color = 0;
 
     httpd_resp_set_type(req, "application/json");
 
     cJSON* response = cJSON_CreateObject();
-    cJSON_AddBoolToObject(response, "led on", led_on);
+    cJSON_AddNumberToObject(response, "color", color);
 
-    const char* button_status = cJSON_Print(response);
+    const char* color_status = cJSON_Print(response);
 
-    ESP_LOGI(tag, "LED GET: %d", led_on);
+    ESP_LOGI(tag, "LED GET: %d", color);
 
-    httpd_resp_sendstr(req, button_status);
+    httpd_resp_sendstr(req, color_status);
 
-    free((void*)button_status);
+    free((void*)color_status);
     cJSON_Delete(response);
 
     return ESP_OK;
@@ -195,7 +189,7 @@ esp_err_t sse_handler(httpd_req_t* req)
 
     ESP_LOGI(tag, "SSE Initial Handler");
 
-    //xTaskCreate("
+    // xTaskCreate("
 
     // Keep the connection open for further messages
     while (true) {
@@ -243,11 +237,6 @@ esp_err_t start_rest_server(const char* base_path)
         free(rest_context);
     }
 
-    ESP_LOGI(tag, "Initializing led_pin");
-    gpio_reset_pin(led_pin);
-    // GPIO_MODE_INPUT_OUTPUT allows us to get the current level
-    gpio_set_direction(led_pin, GPIO_MODE_INPUT_OUTPUT);
-
     httpd_uri_t led_post_uri = {.uri = "/api/v1/led",
                                 .method = HTTP_POST,
                                 .handler = led_post_handler,
@@ -259,13 +248,6 @@ esp_err_t start_rest_server(const char* base_path)
                                .handler = led_get_handler,
                                .user_ctx = rest_context};
     httpd_register_uri_handler(server, &led_get_uri);
-
-    httpd_uri_t sse_uri = {.uri = "/api/v1/sse",
-                           .method = HTTP_GET,
-                           .handler = sse_handler,
-                           .user_ctx = rest_context};
-
-    //httpd_register_uri_handler(server, &sse_uri);
 
     /* URI handler for getting web server files */
     httpd_uri_t common_get_uri = {.uri = "/*",
