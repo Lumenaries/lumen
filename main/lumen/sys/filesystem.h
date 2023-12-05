@@ -2,8 +2,8 @@
 
 #include "esp_err.h"
 
-namespace lumen {
+namespace lumen::sys {
 
 esp_err_t init_fs();
 
-} // namespace lumen
+} // namespace lumen::sys

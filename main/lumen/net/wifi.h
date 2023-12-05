@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace lumen {
+namespace lumen::net {
 
 void initialize_mdns();
 
@@ -13,4 +13,4 @@ void wifi_event_handler(void* arg, esp_event_base_t event_base,
 
 void wifi_init_softap();
 
-} // namespace lumen
+} // namespace lumen::net

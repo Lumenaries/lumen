@@ -1,4 +1,4 @@
-#include "lumen/rest_server.h"
+#include "lumen/web/rest_server.h"
 
 #include "cJSON.h"
 #include "driver/gpio.h"
@@ -11,13 +11,12 @@
 #include <fcntl.h>
 #include <string.h>
 
+namespace lumen::web {
 namespace {
 
 constexpr auto tag = "rest_server";
 
 } // namespace
-
-namespace lumen {
 
 const gpio_num_t led_pin = GPIO_NUM_13;
 
@@ -106,7 +105,7 @@ static esp_err_t rest_common_get_handler(httpd_req_t* req)
     return ESP_OK;
 }
 
-esp_err_t led_handler(httpd_req_t* req)
+esp_err_t led_post_handler(httpd_req_t* req)
 {
     int total_len = req->content_len;
     int cur_len = 0;
@@ -138,7 +137,7 @@ esp_err_t led_handler(httpd_req_t* req)
     } else {
         led_on = false;
     }
-    ESP_LOGI(tag, "LED: %d", led_on);
+    ESP_LOGI(tag, "LED POST: %d", led_on);
 
     gpio_set_level(led_pin, led_on);
 
@@ -154,6 +153,67 @@ esp_err_t led_handler(httpd_req_t* req)
     cJSON_Delete(root);
     return ESP_OK;
 }
+
+esp_err_t led_get_handler(httpd_req_t* req)
+{
+    const bool led_on = gpio_get_level(led_pin);
+
+    httpd_resp_set_type(req, "application/json");
+
+    cJSON* response = cJSON_CreateObject();
+    cJSON_AddBoolToObject(response, "led on", led_on);
+
+    const char* button_status = cJSON_Print(response);
+
+    ESP_LOGI(tag, "LED GET: %d", led_on);
+
+    httpd_resp_sendstr(req, button_status);
+
+    free((void*)button_status);
+    cJSON_Delete(response);
+
+    return ESP_OK;
+}
+
+esp_err_t sse_handler(httpd_req_t* req)
+{
+    httpd_resp_set_type(req, "text/event-stream");
+    httpd_resp_set_hdr(req, "Cache-Control", "no-cache");
+    httpd_resp_set_hdr(req, "Connection", "keep-alive");
+
+    cJSON* initial_response_json = cJSON_CreateObject();
+    cJSON_AddStringToObject(initial_response_json, "data",
+                            "Initial message\n\n");
+    const char* initial_response = cJSON_Print(initial_response_json);
+
+    // Send an initial response
+    httpd_resp_send_chunk(req, initial_response, strlen(initial_response));
+
+    cJSON* response_json = cJSON_CreateObject();
+    cJSON_AddStringToObject(response_json, "data", "Another message\n\n");
+    const char* response = cJSON_Print(response_json);
+
+    ESP_LOGI(tag, "SSE Initial Handler");
+
+    //xTaskCreate("
+
+    // Keep the connection open for further messages
+    while (true) {
+        // Send additional messages at intervals
+        ESP_LOGI(tag, "SSE Handler");
+        httpd_resp_send_chunk(req, response, strlen(response));
+        vTaskDelay(1000);
+    }
+}
+
+/*
+void sse_task(void* parameters)
+{
+
+    while (true) {
+    }
+}
+*/
 
 esp_err_t start_rest_server(const char* base_path)
 {
@@ -185,13 +245,27 @@ esp_err_t start_rest_server(const char* base_path)
 
     ESP_LOGI(tag, "Initializing led_pin");
     gpio_reset_pin(led_pin);
-    gpio_set_direction(led_pin, GPIO_MODE_OUTPUT);
+    // GPIO_MODE_INPUT_OUTPUT allows us to get the current level
+    gpio_set_direction(led_pin, GPIO_MODE_INPUT_OUTPUT);
 
-    httpd_uri_t led_uri = {.uri = "/api/v1/led",
-                           .method = HTTP_POST,
-                           .handler = led_handler,
+    httpd_uri_t led_post_uri = {.uri = "/api/v1/led",
+                                .method = HTTP_POST,
+                                .handler = led_post_handler,
+                                .user_ctx = rest_context};
+    httpd_register_uri_handler(server, &led_post_uri);
+
+    httpd_uri_t led_get_uri = {.uri = "/api/v1/led",
+                               .method = HTTP_GET,
+                               .handler = led_get_handler,
+                               .user_ctx = rest_context};
+    httpd_register_uri_handler(server, &led_get_uri);
+
+    httpd_uri_t sse_uri = {.uri = "/api/v1/sse",
+                           .method = HTTP_GET,
+                           .handler = sse_handler,
                            .user_ctx = rest_context};
-    httpd_register_uri_handler(server, &led_uri);
+
+    //httpd_register_uri_handler(server, &sse_uri);
 
     /* URI handler for getting web server files */
     httpd_uri_t common_get_uri = {.uri = "/*",
@@ -203,4 +277,4 @@ esp_err_t start_rest_server(const char* base_path)
     return ESP_OK;
 }
 
-} // namespace lumen
+} // namespace lumen::web

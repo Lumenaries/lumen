@@ -2,6 +2,6 @@
 
 namespace lumen {
 
-void start_dns_server();
+void start();
 
 } // namespace lumen

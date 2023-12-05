@@ -1,8 +1,10 @@
 idf_component_register(SRCS "main.cpp"
-                            "lumen/dns_server.cpp"
-                            "lumen/filesystem.cpp"
-                            "lumen/rest_server.cpp"
-                            "lumen/wifi.cpp"
+                            "lumen/application.cpp"
+                            "lumen/net/dns_server.cpp"
+                            "lumen/net/wifi.cpp"
+                            "lumen/sys/filesystem.cpp"
+                            "lumen/web/rest_server.cpp"
+                            "lumen/web/timer.cpp"
                     INCLUDE_DIRS ".")
 
 if(CONFIG_EXAMPLE_WEB_DEPLOY_SF)

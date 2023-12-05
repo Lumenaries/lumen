@@ -1,4 +1,4 @@
-#include "lumen/wifi.h"
+#include "lumen/net/wifi.h"
 
 #include "esp_log.h"
 #include "esp_mac.h"
@@ -8,14 +8,13 @@
 #include <cstring>
 #include <string>
 
+namespace lumen::net {
 namespace {
 
 constexpr auto tag = "wifi";
 constexpr auto mdns_instance = "esp home web server";
 
 } // namespace
-
-namespace lumen {
 
 void initialize_mdns()
 {
@@ -81,4 +80,4 @@ void wifi_init_softap()
              CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
 }
 
-} // namespace lumen
+} // namespace lumen::net

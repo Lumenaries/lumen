@@ -1,4 +1,4 @@
-#include "lumen/dns_server.h"
+#include "lumen/net/dns_server.h"
 
 #include <inttypes.h>
 #include <sys/param.h>
@@ -20,13 +20,12 @@
 #define QD_TYPE_A (0x0001)
 #define ANS_TTL_SEC (300)
 
+namespace lumen::net {
 namespace {
 
 constexpr auto tag = "dns_server";
 
 } // namespace
-
-namespace lumen {
 
 // DNS Header Packet
 typedef struct __attribute__((__packed__)) {
@@ -262,4 +261,4 @@ void start_dns_server(void)
     xTaskCreate(dns_server_task, "dns_server", 4096, NULL, 5, NULL);
 }
 
-} // namespace lumen
+} // namespace lumen::net

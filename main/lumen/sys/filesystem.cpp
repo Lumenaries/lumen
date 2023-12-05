@@ -1,4 +1,4 @@
-#include "lumen/filesystem.h"
+#include "lumen/sys/filesystem.h"
 
 #include "esp_log.h"
 #include "esp_spiffs.h"
@@ -6,13 +6,12 @@
 #include "driver/sdmmc_host.h"
 #endif
 
+namespace lumen::sys {
 namespace {
 
 constexpr auto tag = "filesystem";
 
 } // namespace
-
-namespace lumen {
 
 #if CONFIG_EXAMPLE_WEB_DEPLOY_SEMIHOST
 esp_err_t init_fs(void)
@@ -96,4 +95,4 @@ esp_err_t init_fs()
 }
 #endif // CONFIG_EXAMPLE_WEB_DEPLOY_SF
 
-} // namespace lumen
+} // namespace lumen::sys
