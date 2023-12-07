@@ -11,7 +11,7 @@ function App() {
     setColor(json["color"]);
   };
 
-  const interval = setInterval(fetchColor, 500);
+  const interval = setInterval(fetchColor, 10);
   onCleanup(() => clearInterval(interval));
 
   const changeColor = async (c: number) => {
@@ -21,7 +21,7 @@ function App() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "color": c }),
+      body: JSON.stringify({ color: c }),
     });
 
     const json = await response.json();
@@ -46,38 +46,33 @@ function App() {
       <div
         class={`outlined-4 rounded-full bg-${translateColor(
           color(),
-        )}-500 outline outline-offset-2 transition duration-300 ease-in-out`}
+        )}-500 outline outline-offset-2`}
       >
         <img class="h-48 w-48 p-10" src={ledIcon} alt="Solid logo" />
       </div>
 
       <h1 class="my-10 text-5xl">Lumenaries</h1>
 
-      <div>
-        <button
-          onClick={() => changeColor(0)}
-          class="m-2 my-2 w-40 rounded bg-red-500 py-6 text-2xl font-bold text-white"
-        >
-          Red
-        </button>
-      </div>
+      <button
+        onClick={() => changeColor(0)}
+        class="m-2 my-2 w-40 rounded bg-red-500 py-6 text-2xl font-bold text-white"
+      >
+        Red
+      </button>
 
-      <div>
-        <button
-          onClick={() => changeColor(1)}
-          class="m-2 my-2 w-40 rounded bg-green-500 py-6 text-2xl font-bold text-white"
-        >
-          Green
-        </button>
-      </div>
-      <div>
-        <button
-          onClick={() => changeColor(2)}
-          class="m-2 my-2 w-40 rounded bg-blue-500 py-6 text-2xl font-bold text-white"
-        >
-          Blue
-        </button>
-      </div>
+      <button
+        onClick={() => changeColor(1)}
+        class="m-2 my-2 w-40 rounded bg-green-500 py-6 text-2xl font-bold text-white"
+      >
+        Green
+      </button>
+
+      <button
+        onClick={() => changeColor(2)}
+        class="m-2 my-2 w-40 rounded bg-blue-500 py-6 text-2xl font-bold text-white"
+      >
+        Blue
+      </button>
     </div>
   );
 }

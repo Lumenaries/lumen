@@ -1,5 +1,7 @@
 #include "lumen/web/rest_server.h"
 
+#include "lumen/sys/button.h"
+
 #include "cJSON.h"
 #include "driver/gpio.h"
 #include "esp_chip_info.h"
@@ -7,6 +9,8 @@
 #include "esp_log.h"
 #include "esp_random.h"
 #include "esp_vfs.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 
 #include <fcntl.h>
 #include <string.h>
@@ -129,13 +133,15 @@ esp_err_t led_post_handler(httpd_req_t* req)
 
     cJSON* root = cJSON_Parse(buf);
 
-    const int color = cJSON_GetObjectItem(root, "color")->valueint;
+    const led_ring_color color = static_cast<led_ring_color>(
+        cJSON_GetObjectItem(root, "color")->valueint);
     ESP_LOGI(tag, "LED POST: %d", color);
 
     // set the color
+    xQueueSend(power_led_ring_queue, (void*)&color, 0);
 
     cJSON* response = cJSON_CreateObject();
-    cJSON_AddNumberToObject(response, "color", color);
+    cJSON_AddNumberToObject(response, "color", static_cast<int>(color));
     const char* color_status = cJSON_Print(response);
 
     httpd_resp_sendstr(req, color_status);
@@ -150,7 +156,7 @@ esp_err_t led_post_handler(httpd_req_t* req)
 esp_err_t led_get_handler(httpd_req_t* req)
 {
     // get the color
-    const int color = 0;
+    const led_ring_color color = current_color();
 
     httpd_resp_set_type(req, "application/json");
 

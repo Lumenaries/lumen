@@ -18,7 +18,7 @@ esp_err_t init_fs(void)
 {
     esp_err_t ret = esp_vfs_semihost_register(CONFIG_EXAMPLE_WEB_MOUNT_POINT);
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to register semihost driver (%s)!",
+        ESP_LOGE(tag, "Failed to register semihost driver (%s)!",
                  esp_err_to_name(ret));
         return ESP_FAIL;
     }
@@ -49,9 +49,9 @@ esp_err_t init_fs()
                                 &slot_config, &mount_config, &card);
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount filesystem.");
+            ESP_LOGE(tag, "Failed to mount filesystem.");
         } else {
-            ESP_LOGE(TAG, "Failed to initialize the card (%s)",
+            ESP_LOGE(tag, "Failed to initialize the card (%s)",
                      esp_err_to_name(ret));
         }
         return ESP_FAIL;

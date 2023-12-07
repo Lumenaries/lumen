@@ -2,10 +2,12 @@ idf_component_register(SRCS "main.cpp"
                             "lumen/application.cpp"
                             "lumen/net/dns_server.cpp"
                             "lumen/net/wifi.cpp"
+                            "lumen/sys/button.cpp"
+                            "lumen/sys/display.cpp"
                             "lumen/sys/filesystem.cpp"
                             "lumen/web/rest_server.cpp"
-                            "lumen/web/timer.cpp"
-                    INCLUDE_DIRS ".")
+                    INCLUDE_DIRS "."
+                    )
 
 if(CONFIG_EXAMPLE_WEB_DEPLOY_SF)
     set(WEB_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../frontend")
