@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --ignore-pattern dist/",
+    "prod": "npm run lint && npm run build"
   },
   "dependencies": {
     "eslint-plugin-solid": "^0.13.0",
