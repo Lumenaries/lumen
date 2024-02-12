@@ -2,7 +2,7 @@ menu "Lumen"
     menu "Networking"
         config WIFI_SSID
             string "SoftAP SSID"
-            default "lumenaries"
+            default "lumen"
             help
                 SSID (network name) to setup the softAP with.
 

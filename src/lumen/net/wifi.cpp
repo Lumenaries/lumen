@@ -6,30 +6,48 @@
 #include "esp_netif.h"
 #include "esp_wifi.h"
 #include "lwip/inet.h"
-#include "nvs_flash.h"
 
 #include <cstring>
 
 namespace lumen::net {
 namespace {
 
-char const* TAG = "net/wifi";
+constexpr auto tag = "net/wifi";
 
-void wifi_event_handler(void* arg, esp_event_base_t event_base,
-                               int32_t event_id, void* event_data)
+    /** \brief The handler for WiFi events.
+     *
+     * \param arg The arguments passed to the event.
+     * \param event_base The base ID of the event.
+     * \param event_id The ID of the event.
+     * \param event_data The data specific to the event.
+     */
+    void
+    wifi_event_handler(
+        void* arg,
+        esp_event_base_t event_base,
+        int32_t event_id,
+        void* event_data
+    )
 {
     if (event_id == WIFI_EVENT_AP_STACONNECTED) {
         // TODO: This will signal when we can display the website link
         // instead of the SSID and password
-        wifi_event_ap_staconnected_t* event =
-            (wifi_event_ap_staconnected_t*)event_data;
-        ESP_LOGI(TAG, "station " MACSTR " join, AID=%d",
-                 MAC2STR(event->mac), event->aid);
+        auto* event = static_cast<wifi_event_ap_staconnected_t*>(event_data);
+        ESP_LOGI(
+            tag,
+            "station " MACSTR " join, AID=%d",
+            MAC2STR(event->mac),
+            event->aid
+        );
     } else if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
-        wifi_event_ap_stadisconnected_t* event =
-            (wifi_event_ap_stadisconnected_t*)event_data;
-        ESP_LOGI(TAG, "station " MACSTR " leave, AID=%d",
-                 MAC2STR(event->mac), event->aid);
+        auto* event =
+            static_cast<wifi_event_ap_stadisconnected_t*>(event_data);
+        ESP_LOGI(
+            tag,
+            "station " MACSTR " leave, AID=%d",
+            MAC2STR(event->mac),
+            event->aid
+        );
     }
 }
 
@@ -40,12 +58,6 @@ void init_wifi_softap()
     // Initialize networking stack
     ESP_ERROR_CHECK(esp_netif_init());
 
-    // Create default event loop to handle system-level events
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    // Initialize NVS neede by Wi-Fi
-    ESP_ERROR_CHECK(nvs_flash_init());
-
     // Initialize Wi-Fi including netif with default config
     esp_netif_create_default_wifi_ap();
 
@@ -55,17 +67,17 @@ void init_wifi_softap()
     // WIFI_EVENT is the base ID for all events
     // ESP_EVENT_ANY_ID calls the callback function for all events that are
     // raised with the base WIFI_EVENT
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
-                                               &wifi_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(
+        WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL
+    ));
 
     wifi_config_t wifi_config = {
-        .ap = {
-            .ssid = CONFIG_WIFI_SSID,
-            .password = CONFIG_WIFI_PASSWORD,
-            .ssid_len = strlen(CONFIG_WIFI_SSID),
-            .authmode = WIFI_AUTH_WPA_WPA2_PSK,
-            .max_connection = CONFIG_MAX_STA_CONNECTION
-        }
+        .ap =
+            {.ssid = CONFIG_WIFI_SSID,
+             .password = CONFIG_WIFI_PASSWORD,
+             .ssid_len = strlen(CONFIG_WIFI_SSID),
+             .authmode = WIFI_AUTH_WPA_WPA2_PSK,
+             .max_connection = CONFIG_MAX_STA_CONNECTION}
     };
 
     if (strlen(CONFIG_WIFI_PASSWORD) == 0) {
@@ -77,15 +89,20 @@ void init_wifi_softap()
     ESP_ERROR_CHECK(esp_wifi_start());
 
     esp_netif_ip_info_t ip_info;
-    esp_netif_get_ip_info(esp_netif_get_handle_from_ifkey("WIFI_AP_DEF"),
-                          &ip_info);
+    esp_netif_get_ip_info(
+        esp_netif_get_handle_from_ifkey("WIFI_AP_DEF"), &ip_info
+    );
 
     char ip_addr[16];
     inet_ntoa_r(ip_info.ip.addr, ip_addr, 16);
-    ESP_LOGI(TAG, "Set up softAP with IP: %s", ip_addr);
+    ESP_LOGI(tag, "Set up softAP with IP: %s", ip_addr);
 
-    ESP_LOGI(TAG, "wifi_init_softap finished. SSID:'%s' password:'%s'",
-             CONFIG_WIFI_SSID, CONFIG_WIFI_PASSWORD);
+    ESP_LOGI(
+        tag,
+        "wifi_init_softap finished. SSID:'%s' password:'%s'",
+        CONFIG_WIFI_SSID,
+        CONFIG_WIFI_PASSWORD
+    );
 }
 
 } // namespace lumen::net
