@@ -1,0 +1,17 @@
+Checks: '*,
+         -llvmlibc-*,
+         -modernize-use-trailing-return-type,
+         -fuchsia-default-arguments-calls,
+         -fuchsia-default-arguments-declarations,
+         -fuchsia-overloaded-operator,
+         -altera-unroll-loops,
+         -google-readability-todo,
+         -readability-function-cognitive-complexity,
+         '
+
+CheckOptions:
+  - key: hicpp-special-member-functions.AllowSoleDefaultDtor
+    value: 1
+
+HeaderFilterRegex: ".*"
+FormatStyle: file
