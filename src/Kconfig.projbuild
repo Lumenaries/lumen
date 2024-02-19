@@ -1,0 +1,9 @@
+menu "Lumen"
+    menu "Website Deployment"
+        config WEB_DEPLOY_SF
+            bool "Deploy website to SPI Nor Flash"
+            help
+                Delpy website to SPI Nor Flash.
+                Choose this production mode if the size of the website is small (less than 2MB).
+    endmenu
+endmenu
