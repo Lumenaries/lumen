@@ -1,5 +1,5 @@
-#include "lumen/application.hpp"
 #include "lumen/net/wifi.hpp"
+#include "lumen/web/server.hpp"
 
 #include "esp_event.h"
 #include "nvs_flash.h"
@@ -13,6 +13,5 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
 
     lumen::net::init_wifi_softap();
-
-    lumen::Application app{};
+    lumen::web::init_http_server();
 }
