@@ -6,36 +6,47 @@
 namespace lumen::web {
 namespace {
 
-constexpr auto tag = "server";
+constexpr auto tag = "web/server";
 
+void register_endpoints(httpd_handle_t& server);
 esp_err_t root_handler(httpd_req_t* req);
 
 } // namespace
 
-/**
- */
-void init_http_server()
+Server::Server()
 {
-    httpd_handle_t server = nullptr;
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    ESP_LOGI(tag, "Starting web server");
+
     config.uri_match_fn = httpd_uri_match_wildcard;
 
-    ESP_LOGI(tag, "Starting web server");
-    if (httpd_start(&server, &config) != ESP_OK) {
-        ESP_LOGE(tag, "Failed to start the web server");
-        return;
-    }
+    httpd_start(&server, &config);
+    register_endpoints(server);
+}
 
-    httpd_uri_t root_uri = {
-        .uri = "/",
-        .method = HTTP_GET,
-        .handler = root_handler,
-    };
-    httpd_register_uri_handler(server, &root_uri);
+Server::~Server()
+{
+    ESP_LOGI(tag, "Stopping web server");
+    httpd_stop(server);
 }
 
 namespace {
 
+/** \brief Register all of the endpoints.
+ *
+ * \param server A reference to a valid http server handle.
+ */
+void register_endpoints(httpd_handle_t& server)
+{
+    httpd_uri_t root_uri = {
+        .uri = "/",
+        .method = HTTP_GET,
+        .handler = root_handler,
+        .user_ctx = nullptr
+    };
+    httpd_register_uri_handler(server, &root_uri);
+}
+
+/// GET handler for the root ("/") endpoint.
 esp_err_t root_handler(httpd_req_t* req)
 {
     httpd_resp_send(req, "<h1>Hello World!</h1>", HTTPD_RESP_USE_STRLEN);

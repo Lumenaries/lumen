@@ -14,40 +14,12 @@ namespace {
 
 constexpr auto tag = "net/wifi";
 
-/** \brief The handler for WiFi events.
- *
- * \param arg The arguments passed to the event.
- * \param event_base The base ID of the event.
- * \param event_id The ID of the event.
- * \param event_data The data specific to the event.
- */
 void wifi_event_handler(
     void* arg,
     esp_event_base_t event_base,
     int32_t event_id,
     void* event_data
-)
-{
-    if (event_id == WIFI_EVENT_AP_STACONNECTED) {
-        // TODO: This will signal when we can display the website link
-        // instead of the SSID and password
-        auto* event = static_cast<wifi_event_ap_staconnected_t*>(event_data);
-        ESP_LOGI(
-            tag,
-            "station " MACSTR " join, AID=%d",
-            MAC2STR(event->mac),
-            event->aid
-        );
-    } else if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
-        auto* event = static_cast<wifi_event_ap_stadisconnected_t*>(event_data);
-        ESP_LOGI(
-            tag,
-            "station " MACSTR " leave, AID=%d",
-            MAC2STR(event->mac),
-            event->aid
-        );
-    }
-}
+);
 
 } // namespace
 
@@ -102,5 +74,44 @@ void init_wifi_softap()
         CONFIG_WIFI_PASSWORD
     );
 }
+
+namespace {
+
+/** \brief The handler for WiFi events.
+ *
+ * \param arg The arguments passed to the event.
+ * \param event_base The base ID of the event.
+ * \param event_id The ID of the event.
+ * \param event_data The data specific to the event.
+ */
+void wifi_event_handler(
+    void* arg,
+    esp_event_base_t event_base,
+    int32_t event_id,
+    void* event_data
+)
+{
+    if (event_id == WIFI_EVENT_AP_STACONNECTED) {
+        // TODO: This will signal when we can display the website link
+        // instead of the SSID and password
+        auto* event = static_cast<wifi_event_ap_staconnected_t*>(event_data);
+        ESP_LOGI(
+            tag,
+            "station " MACSTR " join, AID=%d",
+            MAC2STR(event->mac),
+            event->aid
+        );
+    } else if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
+        auto* event = static_cast<wifi_event_ap_stadisconnected_t*>(event_data);
+        ESP_LOGI(
+            tag,
+            "station " MACSTR " leave, AID=%d",
+            MAC2STR(event->mac),
+            event->aid
+        );
+    }
+}
+
+} // namespace
 
 } // namespace lumen::net

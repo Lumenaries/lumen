@@ -13,5 +13,12 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
 
     lumen::net::init_wifi_softap();
-    lumen::web::init_http_server();
+
+    // TODO: Start an "Application" task that creates the web server and passes
+    // it to the functions/tasks that need it.
+    auto web_server = lumen::web::Server{};
+
+    while (true) {
+        vTaskDelay(1);
+    }
 }
