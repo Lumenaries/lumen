@@ -4,8 +4,7 @@
 
 namespace lumen::web {
 
-/** \brief Handles the creation and destruction of HTTP web servers.
- */
+/// Handles the creation and destruction of HTTP web servers.
 struct Server {
     httpd_handle_t server = nullptr;
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
