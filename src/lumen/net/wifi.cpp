@@ -14,7 +14,7 @@ namespace {
 
 constexpr auto tag = "net/wifi";
 
-/** \brief The handler for WiFi events.
+/** The handler for WiFi events.
  *
  * \param arg The arguments passed to the event.
  * \param event_base The base ID of the event.
