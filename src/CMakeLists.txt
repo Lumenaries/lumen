@@ -1,5 +1,6 @@
 idf_component_register(SRCS
                            "main.cpp"
+                           "lumen/net/mdns.cpp"
                            "lumen/net/wifi.cpp"
                            "lumen/web/server.cpp"
                        INCLUDE_DIRS "."

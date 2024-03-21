@@ -1,21 +1,32 @@
 menu "Lumen"
     menu "Networking"
-        config WIFI_SSID
-            string "SoftAP SSID"
-            default "lumen"
-            help
-                SSID (network name) to setup the softAP with.
+        menu "Wi-Fi"
+            config WIFI_SSID
+                string "SoftAP SSID"
+                default "lumen"
+                help
+                    SSID (network name) to setup the softAP with.
 
-        config WIFI_PASSWORD
-            string "SoftAP Password"
-            default "lumenaries"
-            help
-                WiFi password (WPA or WPA2) to use for the softAP.
+            config WIFI_PASSWORD
+                string "SoftAP Password"
+                default "lumenaries"
+                help
+                    Wi-Fi password (WPA or WPA2) to use for the softAP.
 
-        config MAX_STA_CONNECTION
-            int "Maxmium STA Connections"
-            default 4
-            help
-                Max number of STA connections to AP.
+            config MAX_STA_CONNECTION
+                int "Maxmium STA Connections"
+                default 4
+                help
+                    Max number of STA connections to AP.
+        endmenu
+
+        menu "mDNS"
+            config MDNS_HOSTNAME
+                string "mDNS Hostname"
+                default "lumen"
+                help
+                    mDNS hostname to allow users users to navigate to the UI.
+
+        endmenu
     endmenu
 endmenu
