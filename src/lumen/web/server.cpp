@@ -8,7 +8,16 @@ namespace {
 
 constexpr auto tag = "web/server";
 
+/** Register all of the endpoints.
+ *
+ * \param server A reference to a valid http server handle.
+ */
 void register_endpoints(httpd_handle_t& server);
+
+/** GET handler for the root ("/") endpoint.
+ *
+ * \param req Pointer to the request being handled.
+ */
 esp_err_t root_handler(httpd_req_t* req);
 
 } // namespace
@@ -31,10 +40,6 @@ Server::~Server()
 
 namespace {
 
-/** \brief Register all of the endpoints.
- *
- * \param server A reference to a valid http server handle.
- */
 void register_endpoints(httpd_handle_t& server)
 {
     httpd_uri_t root_uri = {
@@ -46,7 +51,6 @@ void register_endpoints(httpd_handle_t& server)
     httpd_register_uri_handler(server, &root_uri);
 }
 
-/// GET handler for the root ("/") endpoint.
 esp_err_t root_handler(httpd_req_t* req)
 {
     httpd_resp_send(req, "<h1>Hello World!</h1>", HTTPD_RESP_USE_STRLEN);

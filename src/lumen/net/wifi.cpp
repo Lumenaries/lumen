@@ -14,6 +14,13 @@ namespace {
 
 constexpr auto tag = "net/wifi";
 
+/** \brief The handler for WiFi events.
+ *
+ * \param arg The arguments passed to the event.
+ * \param event_base The base ID of the event.
+ * \param event_id The ID of the event.
+ * \param event_data The data specific to the event.
+ */
 void wifi_event_handler(
     void* arg,
     esp_event_base_t event_base,
@@ -77,13 +84,6 @@ void init_wifi_softap()
 
 namespace {
 
-/** \brief The handler for WiFi events.
- *
- * \param arg The arguments passed to the event.
- * \param event_base The base ID of the event.
- * \param event_id The ID of the event.
- * \param event_data The data specific to the event.
- */
 void wifi_event_handler(
     void* arg,
     esp_event_base_t event_base,
