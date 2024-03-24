@@ -1,6 +1,7 @@
 idf_component_register(SRCS
                            "lumen/activity/message.cpp"
                            "lumen/app_task.cpp"
+                           "lumen/net/mdns.cpp"
                            "lumen/net/wifi.cpp"
                            "lumen/web/handler/root.cpp"
                            "lumen/web/handler/start_timer.cpp"
@@ -16,5 +17,6 @@ idf_component_register(SRCS
                             esp_wifi
                             log             # esp_log
                             lwip
+                            mdns
                             nvs_flash
                         )

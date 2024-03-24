@@ -1,4 +1,5 @@
 #include "lumen/app_task.hpp"
+#include "lumen/net/mdns.hpp"
 #include "lumen/net/wifi.hpp"
 
 #include "esp_event.h"
@@ -13,6 +14,7 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
 
     lumen::net::init_wifi_softap();
+    lumen::net::init_mdns();
 
     xTaskCreate(lumen::app_task, "Application Task", 2048, nullptr, 5, nullptr);
 }
