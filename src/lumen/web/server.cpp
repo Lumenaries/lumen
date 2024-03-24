@@ -1,5 +1,8 @@
 #include "lumen/web/server.hpp"
 
+#include "lumen/web/handler/root.hpp"
+#include "lumen/web/handler/start_timer.hpp"
+
 #include "esp_http_server.h"
 #include "esp_log.h"
 
@@ -13,12 +16,6 @@ constexpr auto tag = "web/server";
  * \param server A reference to a valid http server handle.
  */
 void register_endpoints(httpd_handle_t& server);
-
-/** GET handler for the root ("/") endpoint.
- *
- * \param req Pointer to the request being handled.
- */
-esp_err_t root_handler(httpd_req_t* req);
 
 } // namespace
 
@@ -45,16 +42,19 @@ void register_endpoints(httpd_handle_t& server)
     httpd_uri_t root_uri = {
         .uri = "/",
         .method = HTTP_GET,
-        .handler = root_handler,
+        .handler = handler::root,
         .user_ctx = nullptr
     };
     httpd_register_uri_handler(server, &root_uri);
-}
 
-esp_err_t root_handler(httpd_req_t* req)
-{
-    httpd_resp_send(req, "<h1>Hello World!</h1>", HTTPD_RESP_USE_STRLEN);
-    return ESP_OK;
+    httpd_uri_t start_timer_uri = {
+        .uri = "/start_timer",
+        .method = HTTP_GET,
+        .handler = handler::start_timer,
+        .user_ctx = nullptr
+    };
+
+    httpd_register_uri_handler(server, &start_timer_uri);
 }
 
 } // namespace
