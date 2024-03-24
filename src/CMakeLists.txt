@@ -12,5 +12,6 @@ idf_component_register(SRCS
                             esp_wifi
                             log             # esp_log
                             lwip
+                            mdns
                             nvs_flash
                         )
