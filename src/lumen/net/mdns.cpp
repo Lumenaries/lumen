@@ -14,15 +14,16 @@ void init_mdns()
     mdns_init();
     mdns_hostname_set(CONFIG_MDNS_HOSTNAME);
 
-        mdns_txt_item_t serviceTxtData[] = {
-        {"board", "esp32s3"},
-        {"path", "/"}
-    };
+    mdns_txt_item_t serviceTxtData[] = {{"board", "esp32"}, {"path", "/"}};
 
-    ESP_ERROR_CHECK(mdns_service_add("ESP32-WebServer", "_http", "_tcp", 80, serviceTxtData,
-                                     sizeof(serviceTxtData) / sizeof(serviceTxtData[0])));
-
-
+    ESP_ERROR_CHECK(mdns_service_add(
+        "ESP32-WebServer",
+        "_http",
+        "_tcp",
+        80,
+        serviceTxtData,
+        sizeof(serviceTxtData) / sizeof(serviceTxtData[0])
+    ));
 }
 
 } // namespace lumen::net

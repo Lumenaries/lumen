@@ -1,3 +1,4 @@
+#include "lumen/net/mdns.hpp"
 #include "lumen/net/wifi.hpp"
 #include "lumen/web/server.hpp"
 
@@ -13,6 +14,7 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
 
     lumen::net::init_wifi_softap();
+    lumen::net::init_mdns();
 
     // TODO: Start an "Application" task that creates the web server and passes
     // it to the functions/tasks that need it.
