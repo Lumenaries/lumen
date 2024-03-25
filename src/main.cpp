@@ -1,6 +1,6 @@
+#include "lumen/app_task.hpp"
 #include "lumen/net/mdns.hpp"
 #include "lumen/net/wifi.hpp"
-#include "lumen/web/server.hpp"
 
 #include "esp_event.h"
 #include "nvs_flash.h"
@@ -16,11 +16,5 @@ extern "C" void app_main()
     lumen::net::init_wifi_softap();
     lumen::net::init_mdns();
 
-    // TODO: Start an "Application" task that creates the web server and passes
-    // it to the functions/tasks that need it.
-    auto web_server = lumen::web::Server{};
-
-    while (true) {
-        vTaskDelay(1);
-    }
+    xTaskCreate(lumen::app_task, "Application Task", 2048, nullptr, 5, nullptr);
 }
