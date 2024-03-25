@@ -16,5 +16,5 @@ extern "C" void app_main()
     lumen::net::init_wifi_softap();
     lumen::net::init_mdns();
 
-    xTaskCreate(lumen::app_task, "Application Task", 2048, nullptr, 5, nullptr);
+    xTaskCreate(lumen::app_task, "Application Task", 4096, nullptr, 5, nullptr);
 }
