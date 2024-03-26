@@ -69,20 +69,20 @@ void Snapshot::update_display()
     display_->setTextWrap(false);
 
     // "HOME"
-    display_->setCursor(8, 6);
+    display_->setCursor(8, 9);
     display_->print("HOME:");
 
     // "AWAY"
-    display_->setCursor(8, 28);
+    display_->setCursor(8, 35);
     display_->print("AWAY:");
 
     display_->setTextColor(bg_color);
 
     // Home score
-    display_->setCursor(68, 6);
+    display_->setCursor(68, 9);
     display_->print(std::to_string(home_).c_str());
 
-    display_->setCursor(68, 28);
+    display_->setCursor(68, 35);
     display_->print(std::to_string(away_).c_str());
 }
 

@@ -33,7 +33,7 @@ constexpr auto e_pin = -1;
 constexpr auto panel_res_x = 32;
 constexpr auto panel_res_y = 16;
 
-constexpr auto num_rows = 3;
+constexpr auto num_rows = 4;
 constexpr auto num_cols = 3;
 
 } // namespace

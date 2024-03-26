@@ -52,8 +52,7 @@ namespace {
 esp_err_t reset_handler(httpd_req_t* req)
 {
     // This will reset both home and away
-    send_message_to_app(
-        {activity::MessageCommand::reset, activity::Team::home}
+    send_message_to_app({activity::MessageCommand::reset, activity::Team::home}
     );
 
     httpd_resp_send(req, nullptr, 0);
@@ -110,7 +109,13 @@ esp_err_t common_get_handler(httpd_req_t* req)
     uint32_t filepath_max = ESP_VFS_PATH_MAX + 128;
     char filepath[filepath_max] = "/www";
 
-    if (req->uri[strlen(req->uri) - 1] == '/') {
+    // If the user navigates to the root or to the a client-side route (a route
+    // that has no file extension), send the index.html.
+    // TODO: If request is not root and doesn't have a file extension, check to
+    // see if that file exists in the filesystem before assuming that it's a
+    // client-side route.
+    if (req->uri[strlen(req->uri) - 1] == '/' ||
+        check_file_extension(req->uri, nullptr)) {
         strlcat(filepath, "/index.html", sizeof(filepath));
     } else {
         strlcat(filepath, req->uri, sizeof(filepath));
@@ -223,7 +228,17 @@ void register_endpoints(httpd_handle_t& server)
 
 bool check_file_extension(char const* filepath, char const* ext)
 {
-    return strcasecmp(&filepath[strlen(filepath) - strlen(ext)], ext) == 0;
+    char const* dot = strrchr(filepath, '.');
+
+    if (dot == nullptr && dot == ext) {
+        return true;
+    }
+
+    if (dot != nullptr && ext != nullptr && strcmp(dot, ext) == 0) {
+        return true;
+    }
+
+    return false;
 }
 
 esp_err_t set_content_type_from_file(httpd_req_t* req, char const* filepath)
