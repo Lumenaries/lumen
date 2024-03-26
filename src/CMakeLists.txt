@@ -19,6 +19,7 @@ idf_component_register(SRCS
                             lwip
                             mdns
                             nvs_flash
+                            spiffs          # esp_spiffs
                         )
 
 if (CONFIG_WEB_DEPLOY_SF)
