@@ -49,34 +49,13 @@ Server::~Server()
 
 namespace {
 
-/** GET handler for the root ("/") endpoint.
- *
- * \param req Pointer to the request being handled.
- */
-esp_err_t root_handler(httpd_req_t* req)
-{
-    constexpr auto html =
-        "<h1>Hello World!</h1>"
-        "<div>"
-        "<a style='margin-right: 5px;' href='/increase_one'>increase_one</a>"
-        "<a href='/decrease_one'>decrease_one</a>"
-        "</div>"
-        "<div>"
-        "<a href='/increase_two'>increase_two </a>"
-        "<a style='margin-right: 15px;' href='/decrease_two'>decrease_two</a>"
-        "</div>";
-    httpd_resp_send(req, html, HTTPD_RESP_USE_STRLEN);
-
-    return ESP_OK;
-}
-
 esp_err_t increase_one_handler(httpd_req_t* req)
 {
     send_message_to_app(
         {activity::MessageCommand::increase_score, activity::Team::home}
     );
 
-    return root_handler(req);
+    return ESP_OK;
 }
 
 esp_err_t decrease_one_handler(httpd_req_t* req)
@@ -85,7 +64,7 @@ esp_err_t decrease_one_handler(httpd_req_t* req)
         {activity::MessageCommand::decrease_score, activity::Team::home}
     );
 
-    return root_handler(req);
+    return ESP_OK;
 }
 
 esp_err_t increase_two_handler(httpd_req_t* req)
@@ -94,7 +73,7 @@ esp_err_t increase_two_handler(httpd_req_t* req)
         {activity::MessageCommand::increase_score, activity::Team::away}
     );
 
-    return root_handler(req);
+    return ESP_OK;
 }
 
 esp_err_t decrease_two_handler(httpd_req_t* req)
@@ -103,7 +82,7 @@ esp_err_t decrease_two_handler(httpd_req_t* req)
         {activity::MessageCommand::decrease_score, activity::Team::away}
     );
 
-    return root_handler(req);
+    return ESP_OK;
 }
 
 esp_err_t common_get_handler(httpd_req_t* req)
@@ -130,7 +109,9 @@ esp_err_t common_get_handler(httpd_req_t* req)
 
     set_content_type_from_file(req, filepath);
 
-    uint32_t scratch_buffer_size = 10240;
+    // TODO: Allocate this 10240 bytes outside of the http task to reduce load
+    // times
+    uint32_t scratch_buffer_size = 1024;
     char chunk[scratch_buffer_size];
     ssize_t read_bytes;
 
@@ -171,17 +152,9 @@ esp_err_t common_get_handler(httpd_req_t* req)
 
 void register_endpoints(httpd_handle_t& server)
 {
-    httpd_uri_t root_uri = {
-        .uri = "/",
-        .method = HTTP_GET,
-        .handler = root_handler,
-        .user_ctx = nullptr
-    };
-    httpd_register_uri_handler(server, &root_uri);
-
     httpd_uri_t increase_one_uri = {
         .uri = "/increase_one",
-        .method = HTTP_GET,
+        .method = HTTP_PUT,
         .handler = increase_one_handler,
         .user_ctx = nullptr
     };
@@ -189,7 +162,7 @@ void register_endpoints(httpd_handle_t& server)
 
     httpd_uri_t decrease_one_uri = {
         .uri = "/decrease_one",
-        .method = HTTP_GET,
+        .method = HTTP_PUT,
         .handler = decrease_one_handler,
         .user_ctx = nullptr
     };
@@ -197,7 +170,7 @@ void register_endpoints(httpd_handle_t& server)
 
     httpd_uri_t increase_two_uri = {
         .uri = "/increase_two",
-        .method = HTTP_GET,
+        .method = HTTP_PUT,
         .handler = increase_two_handler,
         .user_ctx = nullptr
     };
@@ -205,7 +178,7 @@ void register_endpoints(httpd_handle_t& server)
 
     httpd_uri_t decrease_two_uri = {
         .uri = "/decrease_two",
-        .method = HTTP_GET,
+        .method = HTTP_PUT,
         .handler = decrease_two_handler,
         .user_ctx = nullptr
     };
