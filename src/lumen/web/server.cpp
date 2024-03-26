@@ -49,11 +49,25 @@ Server::~Server()
 
 namespace {
 
+esp_err_t reset_handler(httpd_req_t* req)
+{
+    // This will reset both home and away
+    send_message_to_app(
+        {activity::MessageCommand::reset, activity::Team::home}
+    );
+
+    httpd_resp_send(req, nullptr, 0);
+
+    return ESP_OK;
+}
+
 esp_err_t increase_one_handler(httpd_req_t* req)
 {
     send_message_to_app(
         {activity::MessageCommand::increase_score, activity::Team::home}
     );
+
+    httpd_resp_send(req, nullptr, 0);
 
     return ESP_OK;
 }
@@ -64,6 +78,8 @@ esp_err_t decrease_one_handler(httpd_req_t* req)
         {activity::MessageCommand::decrease_score, activity::Team::home}
     );
 
+    httpd_resp_send(req, nullptr, 0);
+
     return ESP_OK;
 }
 
@@ -73,6 +89,8 @@ esp_err_t increase_two_handler(httpd_req_t* req)
         {activity::MessageCommand::increase_score, activity::Team::away}
     );
 
+    httpd_resp_send(req, nullptr, 0);
+
     return ESP_OK;
 }
 
@@ -81,6 +99,8 @@ esp_err_t decrease_two_handler(httpd_req_t* req)
     send_message_to_app(
         {activity::MessageCommand::decrease_score, activity::Team::away}
     );
+
+    httpd_resp_send(req, nullptr, 0);
 
     return ESP_OK;
 }
@@ -152,6 +172,14 @@ esp_err_t common_get_handler(httpd_req_t* req)
 
 void register_endpoints(httpd_handle_t& server)
 {
+    httpd_uri_t reset_uri = {
+        .uri = "/reset",
+        .method = HTTP_PUT,
+        .handler = reset_handler,
+        .user_ctx = nullptr
+    };
+    httpd_register_uri_handler(server, &reset_uri);
+
     httpd_uri_t increase_one_uri = {
         .uri = "/increase_one",
         .method = HTTP_PUT,

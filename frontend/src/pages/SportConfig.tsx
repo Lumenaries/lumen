@@ -38,8 +38,16 @@ function BaseConfig(props) {
           <div class="col-span-2 text-center">
             <Timer />
           </div>
-          <Score team_name="Team 1" team="one" default_score={props.default_score} />
-          <Score team_name="Team 2" team="two" default_score={props.default_score} />
+          <Score
+            team_name="Home"
+            team="one"
+            default_score={props.default_score}
+          />
+          <Score
+            team_name="Away"
+            team="two"
+            default_score={props.default_score}
+          />
         </div>
       </div>
     </>
@@ -82,6 +90,9 @@ function Score(props) {
   const [team_name, set_team_name] = createSignal(props.team_name);
   const team = props.team;
   const [score, set_score] = createSignal(0);
+
+  // Reset the scores on the product
+  fetch("/reset", { method: "PUT" });
 
   const decrease_score = function () {
     if (score() != 0) {

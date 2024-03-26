@@ -33,8 +33,8 @@ constexpr auto e_pin = -1;
 constexpr auto panel_res_x = 32;
 constexpr auto panel_res_y = 16;
 
-constexpr auto num_rows = 1;
-constexpr auto num_cols = 1;
+constexpr auto num_rows = 3;
+constexpr auto num_cols = 3;
 
 } // namespace
 
@@ -66,7 +66,7 @@ void app_task(void* /* parameters */)
     );
 
     display->begin();
-    display->setBrightness(50);
+    display->setBrightness(20);
     display->clearScreen();
 
     auto web_server = web::Server{};
@@ -82,6 +82,9 @@ void app_task(void* /* parameters */)
             break;
         case activity::MessageCommand::decrease_score:
             activity.decrease_score(message_buffer.team);
+            break;
+        case activity::MessageCommand::reset:
+            activity.reset();
             break;
         }
     }

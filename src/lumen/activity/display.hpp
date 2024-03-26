@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#define PIXEL_COLOR_DEPTH_BITS 2
+
 namespace lumen::activity {
 
 class Display : public Adafruit_GFX {

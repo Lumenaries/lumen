@@ -10,6 +10,8 @@ class Snapshot : public Activity {
 public:
     explicit Snapshot(Display* display);
 
+    void reset();
+
     void increase_score(Team team);
 
     void decrease_score(Team Team);
