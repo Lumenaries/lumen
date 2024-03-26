@@ -6,4 +6,35 @@ menu "Lumen"
                 Delpy website to SPI Nor Flash.
                 Choose this production mode if the size of the website is small (less than 2MB).
     endmenu
+
+    menu "Networking"
+        menu "Wi-Fi"
+            config WIFI_SSID
+                string "SoftAP SSID"
+                default "lumen"
+                help
+                    SSID (network name) to setup the softAP with.
+
+            config WIFI_PASSWORD
+                string "SoftAP Password"
+                default "lumenaries"
+                help
+                    Wi-Fi password (WPA or WPA2) to use for the softAP.
+
+            config MAX_STA_CONNECTION
+                int "Maxmium STA Connections"
+                default 4
+                help
+                    Max number of STA connections to AP.
+        endmenu
+
+        menu "mDNS"
+            config MDNS_HOSTNAME
+                string "mDNS Hostname"
+                default "lumen"
+                help
+                    mDNS hostname to allow users users to navigate to the UI.
+
+        endmenu
+    endmenu
 endmenu

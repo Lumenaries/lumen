@@ -1,7 +1,20 @@
 idf_component_register(SRCS
                            "main.cpp"
+                           "lumen/net/mdns.cpp"
+                           "lumen/net/wifi.cpp"
+                           "lumen/web/server.cpp"
                        INCLUDE_DIRS "."
-                       REQUIRES)
+                       REQUIRES
+                            esp_event
+                            esp_http_server
+                            esp_hw_support  # esp_mac
+                            esp_netif
+                            esp_wifi
+                            log             # esp_log
+                            lwip
+                            mdns
+                            nvs_flash
+                        )
 
 if (CONFIG_WEB_DEPLOY_SF)
     set(WEB_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../frontend")
