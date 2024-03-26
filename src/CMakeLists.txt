@@ -1,6 +1,7 @@
 idf_component_register(SRCS
                            "lumen/activity/display.cpp"
                            "lumen/activity/snapshot.cpp"
+                           "lumen/activity/message.cpp"
                            "lumen/app_task.cpp"
                            "lumen/net/mdns.cpp"
                            "lumen/net/wifi.cpp"

@@ -31,12 +31,16 @@ void Snapshot::decrease_score(Team team)
 
 void Snapshot::update_display()
 {
+    display_->clearScreen();
+
+    display_->setTextSize(2);
+
     display_->setTextColor(display_->color565(100, 0, 100));
 
     display_->setCursor(0, 0);
     display_->print(std::to_string(home_).c_str());
 
-    display_->setCursor(10, 0);
+    display_->setCursor(20, 0);
     display_->print(std::to_string(away_).c_str());
 }
 

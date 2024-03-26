@@ -4,10 +4,16 @@
 #include "lumen/activity/snapshot.hpp"
 #include "lumen/web/server.hpp"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
+
 #include <memory>
 
 namespace lumen {
 namespace {
+
+QueueHandle_t message_queue = nullptr;
 
 constexpr auto r1_pin = 32;
 constexpr auto g1_pin = 14;
@@ -34,6 +40,10 @@ constexpr auto num_cols = 1;
 
 void app_task(void* /* parameters */)
 {
+    message_queue = xQueueCreate(5, sizeof(activity::Message));
+
+    auto message_buffer = activity::Message{};
+
     HUB75_I2S_CFG::i2s_pins pins = {
         r1_pin,
         g1_pin,
@@ -64,8 +74,23 @@ void app_task(void* /* parameters */)
     auto activity = activity::Snapshot(display.get());
 
     while (true) {
-        vTaskDelay(100);
+        xQueueReceive(message_queue, &message_buffer, portMAX_DELAY);
+
+        switch (message_buffer.command) {
+        case activity::MessageCommand::increase_score:
+            activity.increase_score(message_buffer.team);
+            break;
+        case activity::MessageCommand::decrease_score:
+            activity.decrease_score(message_buffer.team);
+            break;
+        }
     }
+}
+
+void send_message_to_app(activity::Message const& message)
+{
+    // We don't want to lose messages, so wait for as long as necessary
+    xQueueSendToBack(message_queue, &message, portMAX_DELAY);
 }
 
 } // namespace lumen

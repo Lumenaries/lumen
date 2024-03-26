@@ -2,10 +2,9 @@
 
 #include "lumen/activity/activity.hpp"
 #include "lumen/activity/display.hpp"
+#include "lumen/activity/message.hpp"
 
 namespace lumen::activity {
-
-enum class Team { home, away };
 
 class Snapshot : public Activity {
 public:
@@ -21,7 +20,7 @@ private:
     uint home_ = 0;
     uint away_ = 0;
 
-    Display* display_;
+    Display* display_ = nullptr;
 };
 
 } // namespace lumen::activity
