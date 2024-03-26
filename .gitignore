@@ -4,4 +4,3 @@ sdkconfig.old
 .cache/*
 dependencies.lock
 managed_components/*
-node_modules

@@ -1,5 +1,5 @@
 {
-  "name": "vite-template-solid",
+  "name": "lumen-frontend",
   "version": "0.0.0",
   "description": "",
   "type": "module",
@@ -11,6 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
@@ -22,6 +23,7 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
+    "@solidjs/router": "^0.12.5",
     "solid-js": "^1.8.11"
   }
 }
