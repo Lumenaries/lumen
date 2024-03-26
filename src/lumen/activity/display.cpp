@@ -19,11 +19,16 @@ Display::Display(
     : Adafruit_GFX(panelResX * numCols, panelResY * numRows), numRows_{numRows},
       numCols_{numCols}, panelResX_{panelResX}, panelResY_{panelResY},
       displayResX_{numCols * panelResX}, displayResY_{numRows * panelResY},
-      dmaResX_{panelResX * numCols * numRows},
-      dmaDisplay_{std::make_unique<MatrixPanel_I2S_DMA>(
-          HUB75_I2S_CFG(panelResX * 2, panelResY / 2, numRows * numCols, pins)
-      )}
+      dmaResX_{panelResX * numCols * numRows}
 {
+    auto config =
+        HUB75_I2S_CFG(panelResX * 2, panelResY / 2, numRows * numCols, pins);
+
+    //config.double_buff = true;
+
+    //config.setPixelColorDepthBits(6);
+
+    dmaDisplay_ = std::make_unique<MatrixPanel_I2S_DMA>(config);
 }
 
 bool Display::begin()
